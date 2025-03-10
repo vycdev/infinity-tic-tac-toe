@@ -30,6 +30,12 @@ html, body {
     font-size: 20px;
 }
 
+canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
 .fade-away {
     position: absolute;
     text-align: center;
