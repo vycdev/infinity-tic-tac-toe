@@ -1,4 +1,14 @@
-﻿html, body {
+﻿@import url('https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&display=swap');
+
+.kode-mono {
+    font-family: "Kode Mono", monospace;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+
+
+html, body {
     width: 100%;
     height: 100%;
     margin: 0;
@@ -15,14 +25,19 @@
     width: 100%; 
 }
 
+.scoreBoard {
+    padding: 10px;
+    font-size: 20px;
+}
+
 .fade-away {
     position: absolute;
     text-align: center;
     display: flex;
-    width: 500px;
+    width: 700px;
     height: 50px;
     top: calc(50% - 75px); /* 50% of page height minus half of element's height */
-    left: calc(50% - 250px); /* 50% of page width minus half of element's width */
+    left: calc(50% - 350px); /* 50% of page width minus half of element's width */
     justify-content: center;
     align-items: center;
     animation: fadeMoveUp 2s ease-out forwards;
