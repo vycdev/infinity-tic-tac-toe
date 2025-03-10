@@ -11,6 +11,11 @@ const App = () => {
     const [timeLeftO, setTimeLeftO] = useState(60);
     const [nextMove, setNextMove] = useState("X");
     const [hoveredCell, setHoveredCell] = useState(null);
+    const [grid, setGrid] = useState([
+        ["X", "O", ""],
+        ["", "X", ""],
+        ["", "", "X"]
+    ]);
 
     const size = 100; // Box size
     const padding = 2; // Small padding to remove outer borders
@@ -39,7 +44,6 @@ const App = () => {
         }
     };
 
-
     useEffect(() => {
         // Variables 
         const canvas = canvasRef.current;
@@ -49,11 +53,6 @@ const App = () => {
             canvas.height = window.innerHeight;
         };
         resizeCanvas();
-        let grid = [
-            ["X", "O", ""],
-            ["", "X", ""],
-            ["", "", "X"]
-        ];
 
         // Events
         window.addEventListener("resize", resizeCanvas);
@@ -116,7 +115,7 @@ const App = () => {
             window.removeEventListener("resize", resizeCanvas);
             window.removeEventListener("mousemove", handleMouseMove);
         };
-    }, [hoveredCell]);
+    }, [hoveredCell, grid]);
 
     return (
         <div id="content" className="kode-mono">
