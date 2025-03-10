@@ -1,11 +1,42 @@
-﻿#root {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 2rem;
-    text-align: center;
+﻿html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
-th, td {
-    padding-left: 1rem;
-    padding-right: 1rem;
+#root {
+    border: 1px solid grey;
+    width: calc(100% - 2px);
+    height: calc(100% - 2px);
+}
+
+#content {
+    width: 100%; 
+}
+
+.fade-away {
+    position: absolute;
+    text-align: center;
+    display: flex;
+    width: 500px;
+    height: 50px;
+    top: calc(50% - 75px); /* 50% of page height minus half of element's height */
+    left: calc(50% - 250px); /* 50% of page width minus half of element's width */
+    justify-content: center;
+    align-items: center;
+    animation: fadeMoveUp 2s ease-out forwards;
+    animation-delay: 0.5s; /* Optional delay */
+}
+
+@keyframes fadeMoveUp {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-100px); /* Adjust the value as needed */
+    }
 }
