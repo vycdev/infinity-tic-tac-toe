@@ -12,13 +12,12 @@ const App = () => {
     const [nextMove, setNextMove] = useState("X");
     const [hoveredCell, setHoveredCell] = useState(null);
     const [grid, setGrid] = useState([
-        ["X", "O", ""],
-        ["", "X", ""],
+        ["X", "O", "X"],
+        ["", "X", "X"],
         ["", "", "X"]
     ]);
 
     const size = 100; // Box size
-    const padding = 2; // Small padding to remove outer borders
 
     // Handle mouse movement
     const handleMouseMove = (e) => {
@@ -28,8 +27,8 @@ const App = () => {
         const mouseY = e.clientY - rect.top;
 
         // Calculate the starting position to center the grid
-        const gridWidth = size * 3 + padding * 2;
-        const gridHeight = size * 3 + padding * 2;
+        const gridWidth = size * 3;
+        const gridHeight = size * 3;
         const startX = (canvas.width - gridWidth) / 2;
         const startY = (canvas.height - gridHeight) / 2;
 
@@ -42,6 +41,22 @@ const App = () => {
         } else {
             setHoveredCell(null); // If not over a cell, reset
         }
+    };
+
+    const getCellCoords = (row, col) => {
+        const canvas = canvasRef.current;
+
+        // Calculate the starting position to center the grid
+        const gridWidth = size * 3;
+        const gridHeight = size * 3;
+        const startX = (canvas.width - gridWidth) / 2;
+        const startY = (canvas.height - gridHeight) / 2;
+
+        // Calculate the coordinates
+        const x = startX + col * size + size / 2;
+        const y = startY + row * size + size / 2;
+
+        return { x, y };
     };
 
     useEffect(() => {
@@ -65,22 +80,27 @@ const App = () => {
             const deltaTime = timestamp - lastTime;
             lastTime = timestamp;
 
-            const gridWidth = size * 3 + padding * 2;
-            const gridHeight = size * 3 + padding * 2;
+            const gridWidth = size * 3;
+            const gridHeight = size * 3;
             const startX = (canvas.width - gridWidth) / 2;
             const startY = (canvas.height - gridHeight) / 2;
 
             // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.font = "40px Arial";
+
+            ctx.font = "40px Kode Mono";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
+            ctx.lineWidth = 2;
+            ctx.fillStyle = "white";
+            ctx.strokeStyle = "white";
+            ctx.lineCap = "round";
 
             // Draw grid
-            for (let row = 0; row < 3; row++) {
-                for (let col = 0; col < 3; col++) {
-                    const x = startX + col * size + padding;
-                    const y = startY + row * size + padding;
+            for (let row = 0; row < grid.length; row++) {
+                for (let col = 0; col < grid.length; col++) {
+                    const x = startX + col * size;
+                    const y = startY + row * size;
 
                     // Highlight the hovered cell
                     if (hoveredCell && hoveredCell.row === row && hoveredCell.col === col) {
@@ -91,15 +111,83 @@ const App = () => {
                             ctx.fillText(nextMove, x + size / 2, y + size / 2);
                     }
 
-                    // Draw cell (but avoid outer borders)
                     ctx.fillStyle = "white";
-                    ctx.strokeStyle = "white";
+
+                    // Draw cell (but avoid outer borders)
                     if (col > 0) ctx.beginPath(), ctx.moveTo(x, y), ctx.lineTo(x, y + size), ctx.stroke(); // Left border
                     if (row > 0) ctx.beginPath(), ctx.moveTo(x, y), ctx.lineTo(x + size, y), ctx.stroke(); // Top border
 
                     // Draw "X" or "O"
                     if (grid[row][col] === "X" || grid[row][col] === "O") {
-                        ctx.fillText(grid[row][col], x + size / 2, y + size / 2);
+                        ctx.fillText(grid[row][col], x + size / 2, y + size / 2 + 4);
+                    }
+                }
+            }
+
+            for (let row = 0; row < grid.length; row++) {
+                for (let col = 0; col < grid.length; col++) {
+                    ctx.lineWidth = 5;
+                    ctx.strokeStyle = "red";
+                    if (grid[row][col] !== "") {
+                        if (row - 1 >= 0 && row + 1 < grid.length)
+                            if (grid[row][col] == grid[row - 1][col] && grid[row][col] == grid[row + 1][col]) {
+                                // - X -
+                                // - X -
+                                // - X -
+
+                                let start = getCellCoords(row - 1, col);
+                                let end = getCellCoords(row + 1, col);
+
+                                ctx.beginPath();
+                                ctx.moveTo(start.x, start.y);
+                                ctx.lineTo(end.x, end.y);
+                                ctx.stroke();
+                            }
+
+                        if (col - 1 >= 0 && col + 1 < grid.length)
+                            if (grid[row][col] == grid[row][col - 1] && grid[row][col] == grid[row][col + 1]) {
+                                // - - -
+                                // X X X
+                                // - - -
+
+                                let start = getCellCoords(row, col - 1);
+                                let end = getCellCoords(row, col + 1);
+
+                                ctx.beginPath();
+                                ctx.moveTo(start.x, start.y);
+                                ctx.lineTo(end.x, end.y);
+                                ctx.stroke();
+                            }
+
+                        if (row - 1 >= 0 && col - 1 >= 0 && row + 1 < grid.length && col + 1 < grid.length)
+                            if (grid[row][col] == grid[row - 1][col - 1] && grid[row][col] == grid[row + 1][col + 1]) {
+                                // X - -
+                                // - X -
+                                // - - X
+
+                                let start = getCellCoords(row - 1, col - 1);
+                                let end = getCellCoords(row + 1, col + 1);
+
+                                ctx.beginPath();
+                                ctx.moveTo(start.x, start.y);
+                                ctx.lineTo(end.x, end.y);
+                                ctx.stroke();
+                            }
+
+                        if (row - 1 >= 0 && col - 1 >= 0 && row + 1 < grid.length && col + 1 < grid.length)
+                            if (grid[row][col] == grid[row - 1][col + 1] && grid[row][col] == grid[row + 1][col - 1]) {
+                                // - - X
+                                // - X -
+                                // X - -
+
+                                let start = getCellCoords(row - 1, col + 1);
+                                let end = getCellCoords(row + 1, col - 1);
+
+                                ctx.beginPath();
+                                ctx.moveTo(start.x, start.y);
+                                ctx.lineTo(end.x, end.y);
+                                ctx.stroke();
+                            }
                     }
                 }
             }
