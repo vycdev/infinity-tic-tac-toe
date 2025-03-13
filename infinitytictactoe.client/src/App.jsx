@@ -17,7 +17,14 @@ const App = () => {
         ["", "", ""]
     ]);
 
-    const size = 100; // Box size
+    // Box size
+    const [size, setSize] = useState(100);
+    // Font size for X and 0
+    const [fontSize, setFontSize] = useState(40);
+    // Box line width
+    const [boxLineWidth, setBoxLineWidth] = useState(2);
+    // Cross line width
+    const [crossLineWidth, setCrossLineWidth] = useState(5);
 
     // Handle mouse movement
     const handleMouseMove = (e) => {
@@ -83,6 +90,23 @@ const App = () => {
                     newGrid = newGrid.map(row => ["", ...row, ""]);
                 }
 
+                let newSize = size;
+                while (newSize * newGrid.length > canvas.height - 100) {
+                    if (newSize * 0.9 > 0) {
+                        setSize(newSize * 0.9);
+                        newSize *= 0.9;
+                    }
+
+                    if (fontSize * 0.9 > 0)
+                        setFontSize(fontSize * 0.9);
+
+                    if (boxLineWidth * 0.9 > 0)
+                        setBoxLineWidth(boxLineWidth * 0.9);
+
+                    if (crossLineWidth * 0.9 > 0)
+                        setCrossLineWidth(crossLineWidth * 0.9);
+                }
+
                 setGrid(newGrid);
 
                 // Set next move 
@@ -140,10 +164,10 @@ const App = () => {
             // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            ctx.font = "40px Kode Mono";
+            ctx.font = fontSize + "px Kode Mono";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            ctx.lineWidth = 2;
+            ctx.lineWidth = boxLineWidth;
             ctx.fillStyle = "white";
             ctx.strokeStyle = "white";
             ctx.lineCap = "round";
@@ -178,7 +202,7 @@ const App = () => {
 
             for (let row = 0; row < grid.length; row++) {
                 for (let col = 0; col < grid.length; col++) {
-                    ctx.lineWidth = 5;
+                    ctx.lineWidth = crossLineWidth;
                     if (grid[row][col] !== "") {
                         if (grid[row][col] === "X")
                             ctx.strokeStyle = "red";
