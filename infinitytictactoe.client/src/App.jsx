@@ -202,6 +202,11 @@ const App = () => {
                 ["", "", ""],
                 ["", "", ""]
             ]);
+
+            setSize(100);
+            setFontSize(40);
+            setBoxLineWidth(2);
+            setCrossLineWidth(5);
         }, 200);
     }
 
