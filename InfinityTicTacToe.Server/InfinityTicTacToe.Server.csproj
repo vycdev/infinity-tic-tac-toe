@@ -20,9 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\infinitytictactoe.client\infinitytictactoe.client.esproj">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
+    <ProjectReference Include="..\infinitytictactoe.client\infinitytictactoe.client.esproj" />
   </ItemGroup>
 
 </Project>

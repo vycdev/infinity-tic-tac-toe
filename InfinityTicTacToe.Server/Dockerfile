@@ -15,18 +15,18 @@ RUN apt-get -y install nodejs
 FROM with-node AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["infinityTicTacToe.Server/infinityTicTacToe.Server.csproj", "infinityTicTacToe.Server/"]
+COPY ["InfinityTicTacToe.Server/InfinityTicTacToe.Server.csproj", "InfinityTicTacToe.Server/"]
 COPY ["infinitytictactoe.client/infinitytictactoe.client.esproj", "infinitytictactoe.client/"]
-RUN dotnet restore "./infinityTicTacToe.Server/infinityTicTacToe.Server.csproj"
+RUN dotnet restore "./InfinityTicTacToe.Server/InfinityTicTacToe.Server.csproj"
 COPY . .
-WORKDIR "/src/infinityTicTacToe.Server"
-RUN dotnet build "./infinityTicTacToe.Server.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/InfinityTicTacToe.Server"
+RUN dotnet build "./InfinityTicTacToe.Server.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./infinityTicTacToe.Server.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./InfinityTicTacToe.Server.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "infinityTicTacToe.Server.dll"]
+ENTRYPOINT ["dotnet", "InfinityTicTacToe.Server.dll"]
