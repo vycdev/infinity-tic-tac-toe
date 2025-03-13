@@ -12,9 +12,9 @@ const App = () => {
     const [nextMove, setNextMove] = useState("X");
     const [hoveredCell, setHoveredCell] = useState(null);
     const [grid, setGrid] = useState([
-        ["X", "O", "X"],
-        ["", "X", "X"],
-        ["", "", "X"]
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""]
     ]);
 
     const size = 100; // Box size
@@ -27,8 +27,8 @@ const App = () => {
         const mouseY = e.clientY - rect.top;
 
         // Calculate the starting position to center the grid
-        const gridWidth = size * 3;
-        const gridHeight = size * 3;
+        const gridWidth = size * grid.length;
+        const gridHeight = size * grid.length;
         const startX = (canvas.width - gridWidth) / 2;
         const startY = (canvas.height - gridHeight) / 2;
 
@@ -36,10 +36,61 @@ const App = () => {
         const col = Math.floor((mouseX - startX) / size);
         const row = Math.floor((mouseY - startY) / size);
 
-        if (row >= 0 && row < 3 && col >= 0 && col < 3) {
+        if (row >= 0 && row < grid.length && col >= 0 && col < grid.length) {
             setHoveredCell({ row, col });
         } else {
             setHoveredCell(null); // If not over a cell, reset
+        }
+    };
+
+    // Handle mouse movement
+    const handleMouseClick = (e) => {
+        const canvas = canvasRef.current;
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        // Calculate the starting position to center the grid
+        const gridWidth = size * grid.length;
+        const gridHeight = size * grid.length;
+        const startX = (canvas.width - gridWidth) / 2;
+        const startY = (canvas.height - gridHeight) / 2;
+
+        // Calculate row and column based on mouse position
+        const col = Math.floor((mouseX - startX) / size);
+        const row = Math.floor((mouseY - startY) / size);
+
+        // Check if its within grid 
+        if (row >= 0 && row < grid.length && col >= 0 && col < grid.length) {
+            // Check if cell is free
+            if (grid[row][col] === "") {
+                let newGrid = grid;
+                newGrid[row][col] = nextMove;
+
+                // Increase grid size if grid size reached 
+                let isFull = true;
+                for (let row = 0; row < newGrid.length; row++) {
+                    for (let col = 0; col < newGrid.length; col++) {
+                        if (newGrid[row][col] === "")
+                            isFull = false;
+                    }
+                }
+
+                if (isFull) {
+                    newGrid.unshift(new Array(newGrid[0].length).fill(""));
+                    newGrid.push(new Array(newGrid[0].length).fill(""));
+
+                    newGrid = newGrid.map(row => ["", ...row, ""]);
+                }
+
+                setGrid(newGrid);
+
+                // Set next move 
+                if (nextMove === "X")
+                    setNextMove("O");
+                else
+                    setNextMove("X");
+            }
         }
     };
 
@@ -47,8 +98,8 @@ const App = () => {
         const canvas = canvasRef.current;
 
         // Calculate the starting position to center the grid
-        const gridWidth = size * 3;
-        const gridHeight = size * 3;
+        const gridWidth = size * grid.length;
+        const gridHeight = size * grid.length;
         const startX = (canvas.width - gridWidth) / 2;
         const startY = (canvas.height - gridHeight) / 2;
 
@@ -72,6 +123,7 @@ const App = () => {
         // Events
         window.addEventListener("resize", resizeCanvas);
         window.addEventListener("mousemove", handleMouseMove);
+        window.addEventListener("click", handleMouseClick);
 
         // Game Loop
         let lastTime = 0;
@@ -80,8 +132,8 @@ const App = () => {
             const deltaTime = timestamp - lastTime;
             lastTime = timestamp;
 
-            const gridWidth = size * 3;
-            const gridHeight = size * 3;
+            const gridWidth = size * grid.length;
+            const gridHeight = size * grid.length;
             const startX = (canvas.width - gridWidth) / 2;
             const startY = (canvas.height - gridHeight) / 2;
 
@@ -127,8 +179,12 @@ const App = () => {
             for (let row = 0; row < grid.length; row++) {
                 for (let col = 0; col < grid.length; col++) {
                     ctx.lineWidth = 5;
-                    ctx.strokeStyle = "red";
                     if (grid[row][col] !== "") {
+                        if (grid[row][col] === "X")
+                            ctx.strokeStyle = "red";
+                        if (grid[row][col] === "O")
+                            ctx.strokeStyle = "blue";
+
                         if (row - 1 >= 0 && row + 1 < grid.length)
                             if (grid[row][col] == grid[row - 1][col] && grid[row][col] == grid[row + 1][col]) {
                                 // - X -
@@ -202,6 +258,7 @@ const App = () => {
             cancelAnimationFrame(animationRef.current);
             window.removeEventListener("resize", resizeCanvas);
             window.removeEventListener("mousemove", handleMouseMove);
+            window.removeEventListener("click", handleMouseClick);
         };
     }, [hoveredCell, grid]);
 
