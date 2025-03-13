@@ -26,11 +26,17 @@ html, body {
 
 .blue {
     color: #3299fe;
+}
+
+.blueShadow {
     text-shadow: -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 2px 2px 0 white, -5px -5px 0 #242424, 5px -5px 0 #242424, -5px 5px 0 #242424, 5px 5px 0 #242424;
 }
 
 .red {
     color: #fe3232;
+}
+
+.redShadow {
     text-shadow: -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 2px 2px 0 white, -5px -5px 0 #242424, 5px -5px 0 #242424, -5px 5px 0 #242424, 5px 5px 0 #242424;
 }
 
@@ -46,7 +52,7 @@ html, body {
 
 .scoreBoard {
     padding: 10px;
-    font-size: 26px;
+    font-size: 22px;
 }
 
 canvas {
@@ -61,7 +67,7 @@ canvas {
 }
 
 .win-screen {
-    z-index: 99;
+    z-index: 999;
     position: absolute;
     text-align: center;
     display: flex;
@@ -72,6 +78,30 @@ canvas {
     left: calc(50% - 350px); /* 50% of page width minus half of element's width */
     justify-content: center;
     align-items: center;
+}
+
+
+.credits {
+    z-index: 99;
+    position: absolute;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    height: 30px;
+    bottom: 10px; 
+    left: calc(50% - 100px); 
+    justify-content: center;
+    align-items: center;
+}
+
+.restartButton:hover {
+    cursor: pointer;
+}
+
+.credits:hover {
+    cursor: pointer;
+    text-shadow: -1px -1px 0 #3299fe, 1px -1px 0 #fe3232, -1px 1px 0 #3299fe, 1px 1px 0 #fe3232, -5px -5px 0 #242424, 5px -5px 0 #242424, -5px 5px 0 #242424, 5px 5px 0 #242424;
 }
 
 .fade-away {

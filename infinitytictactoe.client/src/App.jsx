@@ -368,9 +368,9 @@ const App = () => {
 
     const getWinner = () => {
         if (pointsX > pointsO) {
-            return <h1>Player <span className="red">X</span> won the game!</h1>
+            return <h1>Player <span className="red redShadow">X</span> won the game!</h1>
         } else if (pointsO > pointsX) {
-            return <h1>Player <span className="blue">O</span> won the game!</h1>
+            return <h1>Player <span className="blue blueShadow">O</span> won the game!</h1>
         } else {
             return <h1>Tie!</h1>
         }
@@ -381,19 +381,20 @@ const App = () => {
             <h1 className="fade-away strokeme">Infinity Tic Tac Toe</h1>
             <div className="win-screen strokeme" style={{ display: timeLeft > 0 ? "none" : "block" }}>
                 {getWinner()}
-                <h2 onClick={restart}>Press R to restart</h2>
+                <h2 className="restartButton" onClick={restart}>Press R to restart</h2>
             </div>
             <div className="scoreBoard">
                 <div>
-                    <span>Player X: {pointsX}</span>
+                    <span>Player <span className="red">X</span>: {pointsX}</span>
                 </div>
                 <div>
-                    <span>Player O: {pointsO}</span>
+                    <span>Player <span className="blue">O</span>: {pointsO}</span>
                 </div>
                 <div>
                     <span>Time Left: {timeLeft}</span>
                 </div>
             </div>
+            <div className="credits" onClick={() => window.open("https://vycdev.com", "_blank")}>Made by vycdev</div>
             <canvas className="canvas" ref={canvasRef}></canvas>
         </div>
     );
