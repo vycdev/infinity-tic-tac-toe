@@ -4,7 +4,6 @@ import './App.css';
 const App = () => {
     const canvasRef = useRef(null);
     const animationRef = useRef(null);
-    const lastTimeStamp = useRef(null);
 
     const [pointsX, setPointsX] = useState(0);
     const [pointsO, setPointsO] = useState(0);
@@ -57,6 +56,9 @@ const App = () => {
 
     // Handle mouse movement
     const handleMouseClick = (e) => {
+        if (timeLeft == 0)
+            return;
+
         const canvas = canvasRef.current;
         const rect = canvas.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
@@ -98,7 +100,7 @@ const App = () => {
                 let newSize = size;
                 let stepSize = 0.9;
 
-                while (newSize * newGrid.length > canvas.height - 100) {
+                while (newSize * newGrid.length > canvas.height - 100 || newSize * newGrid.length > canvas.width - 100) {
                     if (newSize * stepSize > 0) {
                         setSize(newSize * stepSize);
                         newSize *= stepSize;
@@ -186,6 +188,29 @@ const App = () => {
         return { x, y };
     };
 
+    const restart = () => {
+        setTimeout(() => {
+            setPointsX(0);
+            setPointsO(0);
+
+            setTimeLeft(60);
+            setTimeStart(null);
+            setNextMove("X");
+            setGameStarted(false);
+            setGrid([
+                ["", "", ""],
+                ["", "", ""],
+                ["", "", ""]
+            ]);
+        }, 200);
+    }
+
+    const handleKeyDown = (e) => {
+        if (e.key === "r" || e.key === "R") {
+            restart();
+        }
+    };
+
     useEffect(() => {
         // Variables 
         const canvas = canvasRef.current;
@@ -200,14 +225,10 @@ const App = () => {
         window.addEventListener("resize", resizeCanvas);
         window.addEventListener("mousemove", handleMouseMove);
         window.addEventListener("click", handleMouseClick);
+        window.addEventListener("keydown", handleKeyDown);
 
         // Game Loop (God forgive me for the atrocities I have brought upon this world)
         const Update = (timestamp) => {
-            if (!lastTimeStamp.current)
-                lastTimeStamp.current = timestamp;
-
-            const elapsed = timestamp - lastTimeStamp.current;
-
             const gridWidth = size * grid.length;
             const gridHeight = size * grid.length;
             const startX = (canvas.width - gridWidth) / 2;
@@ -257,9 +278,9 @@ const App = () => {
                     ctx.lineWidth = crossLineWidth;
                     if (grid[row][col] !== "") {
                         if (grid[row][col] === "X")
-                            ctx.strokeStyle = "red";
+                            ctx.strokeStyle = "#fe3232";
                         if (grid[row][col] === "O")
-                            ctx.strokeStyle = "blue";
+                            ctx.strokeStyle = "#3299fe";
 
                         if (row - 1 >= 0 && row + 1 < grid.length)
                             if (grid[row][col] == grid[row - 1][col] && grid[row][col] == grid[row + 1][col]) {
@@ -341,12 +362,27 @@ const App = () => {
             window.removeEventListener("resize", resizeCanvas);
             window.removeEventListener("mousemove", handleMouseMove);
             window.removeEventListener("click", handleMouseClick);
+            window.removeEventListener("keydown", handleKeyDown);
         };
     }, [timeStart, hoveredCell, grid]);
 
+    const getWinner = () => {
+        if (pointsX > pointsO) {
+            return <h1>Player <span className="red">X</span> won the game!</h1>
+        } else if (pointsO > pointsX) {
+            return <h1>Player <span className="blue">O</span> won the game!</h1>
+        } else {
+            return <h1>Tie!</h1>
+        }
+    }
+
     return (
         <div id="content" className="kode-mono">
-            <h1 className="fade-away">Infinity Tic Tac Toe</h1>
+            <h1 className="fade-away strokeme">Infinity Tic Tac Toe</h1>
+            <div className="win-screen strokeme" style={{ display: timeLeft > 0 ? "none" : "block" }}>
+                {getWinner()}
+                <h2 onClick={restart}>Press R to restart</h2>
+            </div>
             <div className="scoreBoard">
                 <div>
                     <span>Player X: {pointsX}</span>
