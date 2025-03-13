@@ -26,12 +26,12 @@ html, body {
 
 .blue {
     color: #3299fe;
-    text-shadow: -3px -3px 0 white, 3px -3px 0 white, -3px 3px 0 white, 3px 3px 0 white;
+    text-shadow: -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 2px 2px 0 white, -5px -5px 0 #242424, 5px -5px 0 #242424, -5px 5px 0 #242424, 5px 5px 0 #242424;
 }
 
 .red {
     color: #fe3232;
-    text-shadow: -3px -3px 0 white, 3px -3px 0 white, -3px 3px 0 white, 3px 3px 0 white;
+    text-shadow: -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 2px 2px 0 white, -5px -5px 0 #242424, 5px -5px 0 #242424, -5px 5px 0 #242424, 5px 5px 0 #242424;
 }
 
 #root {
@@ -57,7 +57,7 @@ canvas {
 
 .strokeme {
     color: white;
-    text-shadow: -3px -3px 0 #3299fe, 3px -3px 0 #fe3232, -3px 3px 0 #3299fe, 3px 3px 0 #fe3232;
+    text-shadow: -2px -2px 0 #3299fe, 2px -2px 0 #fe3232, -2px 2px 0 #3299fe, 2px 2px 0 #fe3232, -5px -5px 0 #242424, 5px -5px 0 #242424, -5px 5px 0 #242424, 5px 5px 0 #242424;
 }
 
 .win-screen {
