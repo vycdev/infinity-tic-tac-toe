@@ -4,13 +4,18 @@ import './App.css';
 const App = () => {
     const canvasRef = useRef(null);
     const animationRef = useRef(null);
+    const lastTimeStamp = useRef(null);
 
     const [pointsX, setPointsX] = useState(0);
     const [pointsO, setPointsO] = useState(0);
-    const [timeLeftX, setTimeLeftX] = useState(60);
-    const [timeLeftO, setTimeLeftO] = useState(60);
+
+    const [timeLeft, setTimeLeft] = useState(60);
+
+    const [timeStart, setTimeStart] = useState(null);
+
     const [nextMove, setNextMove] = useState("X");
     const [hoveredCell, setHoveredCell] = useState(null);
+    const [gameStarted, setGameStarted] = useState(false);
     const [grid, setGrid] = useState([
         ["", "", ""],
         ["", "", ""],
@@ -91,30 +96,39 @@ const App = () => {
                 }
 
                 let newSize = size;
+                let stepSize = 0.9;
+
                 while (newSize * newGrid.length > canvas.height - 100) {
-                    if (newSize * 0.9 > 0) {
-                        setSize(newSize * 0.9);
-                        newSize *= 0.9;
+                    if (newSize * stepSize > 0) {
+                        setSize(newSize * stepSize);
+                        newSize *= stepSize;
                     }
 
-                    if (fontSize * 0.9 > 0)
-                        setFontSize(fontSize * 0.9);
+                    if (fontSize * stepSize > 0)
+                        setFontSize(fontSize * stepSize);
 
-                    if (boxLineWidth * 0.9 > 0)
-                        setBoxLineWidth(boxLineWidth * 0.9);
+                    if (boxLineWidth * stepSize > 0)
+                        setBoxLineWidth(boxLineWidth * stepSize);
 
-                    if (crossLineWidth * 0.9 > 0)
-                        setCrossLineWidth(crossLineWidth * 0.9);
+                    if (crossLineWidth * stepSize > 0)
+                        setCrossLineWidth(crossLineWidth * stepSize);
                 }
 
                 setGrid(newGrid);
                 calculatePoints(newGrid);
 
                 // Set next move 
-                if (nextMove === "X")
+                if (nextMove === "X") {
                     setNextMove("O");
-                else
+                } else {
                     setNextMove("X");
+                }
+
+
+                if (!gameStarted) {
+                    setTimeStart(new Date());
+                    setGameStarted(true);
+                }
             }
         }
     };
@@ -187,12 +201,12 @@ const App = () => {
         window.addEventListener("mousemove", handleMouseMove);
         window.addEventListener("click", handleMouseClick);
 
-        // Game Loop
-        let lastTime = 0;
-
+        // Game Loop (God forgive me for the atrocities I have brought upon this world)
         const Update = (timestamp) => {
-            const deltaTime = timestamp - lastTime;
-            lastTime = timestamp;
+            if (!lastTimeStamp.current)
+                lastTimeStamp.current = timestamp;
+
+            const elapsed = timestamp - lastTimeStamp.current;
 
             const gridWidth = size * grid.length;
             const gridHeight = size * grid.length;
@@ -310,6 +324,12 @@ const App = () => {
                 }
             }
 
+            if (timeStart != null && timeLeft > 0) {
+                let newTime = Math.floor(((((new Date(timeStart.getTime() + 60 * 1000))) - new Date()) / 1000) * 100) / 100;
+
+                setTimeLeft(newTime > 0 ? newTime : 0);
+            }
+
             // Request next frame
             animationRef.current = requestAnimationFrame(Update);
         }
@@ -322,7 +342,7 @@ const App = () => {
             window.removeEventListener("mousemove", handleMouseMove);
             window.removeEventListener("click", handleMouseClick);
         };
-    }, [hoveredCell, grid]);
+    }, [timeStart, hoveredCell, grid]);
 
     return (
         <div id="content" className="kode-mono">
@@ -330,13 +350,12 @@ const App = () => {
             <div className="scoreBoard">
                 <div>
                     <span>Player X: {pointsX}</span>
-                    {" | "}
-                    <span>Time Left X: {timeLeftX}</span>
                 </div>
                 <div>
                     <span>Player O: {pointsO}</span>
-                    {" | "}
-                    <span>Time Left O: {timeLeftO}</span>
+                </div>
+                <div>
+                    <span>Time Left: {timeLeft}</span>
                 </div>
             </div>
             <canvas className="canvas" ref={canvasRef}></canvas>
