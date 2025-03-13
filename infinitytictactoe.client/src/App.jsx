@@ -75,15 +75,15 @@ const App = () => {
                 newGrid[row][col] = nextMove;
 
                 // Increase grid size if grid size reached 
-                let isFull = true;
+                let totalUnfilled = 0;
                 for (let row = 0; row < newGrid.length; row++) {
                     for (let col = 0; col < newGrid.length; col++) {
                         if (newGrid[row][col] === "")
-                            isFull = false;
+                            totalUnfilled++;
                     }
                 }
 
-                if (isFull) {
+                if (totalUnfilled < grid.length * grid.length * 0.2) {
                     newGrid.unshift(new Array(newGrid[0].length).fill(""));
                     newGrid.push(new Array(newGrid[0].length).fill(""));
 
@@ -108,6 +108,7 @@ const App = () => {
                 }
 
                 setGrid(newGrid);
+                calculatePoints(newGrid);
 
                 // Set next move 
                 if (nextMove === "X")
@@ -117,6 +118,43 @@ const App = () => {
             }
         }
     };
+
+    const calculatePoints = (grid) => {
+        let newPointsX = 0;
+        let newPointsO = 0;
+
+        for (let row = 0; row < grid.length; row++) {
+            for (let col = 0; col < grid.length; col++) {
+                if (grid[row][col] === "")
+                    continue;
+
+                let point = 0;
+                if (row - 1 >= 0 && row + 1 < grid.length)
+                    if (grid[row][col] == grid[row - 1][col] && grid[row][col] == grid[row + 1][col])
+                        point++;
+
+                if (col - 1 >= 0 && col + 1 < grid.length)
+                    if (grid[row][col] == grid[row][col - 1] && grid[row][col] == grid[row][col + 1])
+                        point++;
+
+                if (row - 1 >= 0 && col - 1 >= 0 && row + 1 < grid.length && col + 1 < grid.length)
+                    if (grid[row][col] == grid[row - 1][col - 1] && grid[row][col] == grid[row + 1][col + 1])
+                        point++;
+
+                if (row - 1 >= 0 && col - 1 >= 0 && row + 1 < grid.length && col + 1 < grid.length)
+                    if (grid[row][col] == grid[row - 1][col + 1] && grid[row][col] == grid[row + 1][col - 1])
+                        point++;
+
+                if (grid[row][col] === "X")
+                    newPointsX += point;
+                if (grid[row][col] === "O")
+                    newPointsO += point;
+            }
+        }
+
+        setPointsX(newPointsX);
+        setPointsO(newPointsO);
+    }
 
     const getCellCoords = (row, col) => {
         const canvas = canvasRef.current;
@@ -300,7 +338,6 @@ const App = () => {
                     {" | "}
                     <span>Time Left O: {timeLeftO}</span>
                 </div>
-                <div>Next Move: {nextMove}</div>
             </div>
             <canvas className="canvas" ref={canvasRef}></canvas>
         </div>
