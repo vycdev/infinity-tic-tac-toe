@@ -13,6 +13,8 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    background: #242424;
+    color: white;
 
     /*  No Select  */
     -webkit-touch-callout: none; /* iOS Safari */
