@@ -7,7 +7,6 @@
     font-style: normal;
 }
 
-
 html, body {
     width: 100%;
     height: 100%;
@@ -15,7 +14,8 @@ html, body {
     padding: 0;
     background: #242424;
     color: white;
-
+    
+    overflow: hidden;
     /*  No Select  */
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
@@ -43,13 +43,14 @@ html, body {
 }
 
 #root {
-    border: 1px solid grey;
+    border: 1px solid white;
     width: calc(100% - 2px);
     height: calc(100% - 2px);
+    overflow: hidden;
 }
 
 #content {
-    width: 100%; 
+    width: 100%;
 }
 
 .scoreBoard {
@@ -74,10 +75,9 @@ canvas {
     text-align: center;
     display: flex;
     flex-direction: column;
-    width: 700px;
+    width: 100%;
     height: 50px;
     top: calc(50% - 75px); /* 50% of page height minus half of element's height */
-    left: calc(50% - 350px); /* 50% of page width minus half of element's width */
     justify-content: center;
     align-items: center;
 }
@@ -89,10 +89,9 @@ canvas {
     text-align: center;
     display: flex;
     flex-direction: column;
-    width: 200px;
+    width: 100%;
     height: 30px;
     bottom: 10px; 
-    left: calc(50% - 100px); 
     justify-content: center;
     align-items: center;
 }
@@ -112,10 +111,9 @@ canvas {
     position: absolute;
     text-align: center;
     display: flex;
-    width: 700px;
+    width: 100%;
     height: 50px;
     top: calc(50% - 75px); /* 50% of page height minus half of element's height */
-    left: calc(50% - 350px); /* 50% of page width minus half of element's width */
     justify-content: center;
     align-items: center;
     animation: fadeMoveUp 2s ease-out forwards;
